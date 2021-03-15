@@ -75,11 +75,11 @@ const UserToolbar = (props) => {
       <Typography className={props.classes.title} variant="h6" noWrap>
         Social App
       </Typography>
+      <Button color="inherit" onClick={() => redirect("/feed")}>
+        News Feed
+      </Button>
       <Button color="inherit" onClick={() => redirect("/profile")}>
         Profile
-      </Button>
-      <Button color="inherit" onClick={() => redirect("/feed")}>
-        Feed
       </Button>
       <Button color="inherit" onClick={handleLogout}>
         Logout
