@@ -1,33 +1,15 @@
-import { Container, makeStyles, Typography } from "@material-ui/core"
-import Post from "../components/Post"
-import CreatePost from "./CreatePost"
+import {
+  Button,
+  Container,
+  LinearProgress,
+  makeStyles,
+} from "@material-ui/core"
+import Post from "../components/post/Post"
+import CreatePost from "../components/post/CreatePost"
 import Alert from "@material-ui/lab/Alert"
-import { gql, useQuery } from "@apollo/client"
-
-/**
- * Represents the query to fetch for the feed.
- */
-export const GET_FEED_QUERY = gql`
-  query {
-    getFeed {
-      id
-      post
-      user {
-        id
-        firstName
-        lastName
-      }
-      likes {
-        id
-        user {
-          id
-        }
-      }
-      likesCount
-      likedByUser
-    }
-  }
-`
+import { useLazyQuery } from "@apollo/client"
+import GET_FEED from "./getFeedQuery"
+import { useEffect, useRef, useState } from "react"
 
 /**
  * Creates the styling of the feed page.
@@ -39,10 +21,15 @@ const useStyles = makeStyles((theme) => ({
   error: {
     margin: theme.spacing(2),
   },
+  postList: {
+    listStyle: "none",
+    padding: "0",
+  },
 }))
 
 /**
  * Creates the feed page component and handles the executing of the feed query.
+ * @author Adam Rodrigues
  * @returns The feed page component.
  */
 const FeedPage = () => {
@@ -55,16 +42,30 @@ const FeedPage = () => {
    * The query hook to fetch the feed.
    * Temporarily using polling intervals to further investigate why the UI is not updating upon cache updating.
    */
-  const { loading, error, data } = useQuery(GET_FEED_QUERY, {
-    errorPolicy: "all",
-    pollInterval: 100,
-    fetchPolicy: "cache-and-network",
+  const [getFeed, { loading, error, data }] = useLazyQuery(GET_FEED, {
+    onCompleted({ getFeed }) {
+      scrollRef.current.scrollIntoView()
+    },
   })
+
+  /**
+   * The offset used for loading more feed.
+   */
+  const [feedOffset, setFeedOffset] = useState(0)
+
+  /**
+   * Used to scroll to bottom on load more feed event.
+   */
+  const scrollRef = useRef(null)
+
+  useEffect(() => {
+    getFeed({ variables: { offset: feedOffset } })
+  }, [feedOffset, getFeed])
 
   return (
     <Container className={classes.container} maxWidth="sm">
       <CreatePost />
-      {loading ? <Typography variant="h6">Loading...</Typography> : ""}
+      {loading ? <LinearProgress></LinearProgress> : ""}
       {error ? (
         <Alert className={classes.error} severity="error">
           {error.graphQLErrors.map(({ message }) => {
@@ -77,19 +78,31 @@ const FeedPage = () => {
       ) : (
         ""
       )}
-      {data
-        ? data.getFeed.map((post, index) => {
-            return (
-              <Post
-                id={post.id}
-                poster={post.user.firstName + " " + post.user.lastName}
-                post={post.post}
-                likesCount={post.likesCount}
-                isLiked={post.likedByUser}
-              />
-            )
-          })
-        : ""}
+      <ul className={classes.postList}>
+        {data
+          ? data.getFeed.map((post, index) => {
+              return (
+                <li key={post.id}>
+                  <Post
+                    id={post.id}
+                    poster={post.user.firstName + " " + post.user.lastName}
+                    post={post.post}
+                    likesCount={post.likesCount}
+                    isLiked={post.likedByUser}
+                  />
+                </li>
+              )
+            })
+          : ""}
+      </ul>
+      <div style={{ float: "left", clear: "both" }} ref={scrollRef}></div>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => setFeedOffset(feedOffset + 1)}
+      >
+        Load more
+      </Button>
     </Container>
   )
 }

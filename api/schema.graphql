@@ -31,9 +31,8 @@
 
   type Query {
     getUser: User
-    getFeed: [Post]
+    getFeed(offset: Int!): [Post]
     getComments(postId: Int!): [Comment]
-    getUsers: [User]
   }
 
   type Mutation {

@@ -3,7 +3,6 @@ import {
   CardActions,
   CardContent,
   makeStyles,
-  Typography,
   Box,
   Button,
   CardActionArea,

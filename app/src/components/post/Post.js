@@ -8,79 +8,15 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core"
-import Comments from "./Comments"
+import Comments from "../comment/Comments"
 import { useState } from "react"
-import { gql, useMutation, useQuery } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import ThumbUpIcon from "@material-ui/icons/ThumbUp"
 import ThumbDownIcon from "@material-ui/icons/ThumbDown"
 import ChatBubbleIcon from "@material-ui/icons/ChatBubble"
-
-/**
- * The graphql mutation to add a comment.
- */
-const ADD_COMMENT = gql`
-  mutation AddComment($comment: String!, $postId: Int!) {
-    addComment(comment: $comment, postId: $postId) {
-      id
-      comment
-      post {
-        id
-        post
-      }
-      user {
-        id
-        firstName
-        lastName
-      }
-    }
-  }
-`
-
-/**
- * The graphql query to get comments.
- */
-const GET_COMMENTS = gql`
-  query GetComments($postId: Int!) {
-    getComments(postId: $postId) {
-      id
-      comment
-      post {
-        id
-      }
-      user {
-        id
-        firstName
-        lastName
-      }
-      likes {
-        id
-        user {
-          id
-        }
-      }
-      likesCount
-    }
-  }
-`
-
-/**
- * The graphql mutation to like a post.
- */
-const TOGGLE_LIKE = gql`
-  mutation toggleLike($targetId: Int!, $likeType: LikeType!) {
-    toggleLike(targetId: $targetId, likeType: $likeType) {
-      like {
-        id
-        user {
-          id
-          firstName
-        }
-        likeType
-      }
-      liked
-    }
-  }
-`
+import ADD_COMMENT from "../comment/addCommentMutation"
+import GET_COMMENTS from "../comment/getCommentsQuery"
+import { TOGGLE_LIKE, LikeType } from "./toggleLikeMutation"
 
 /**
  * The styling of a post.
@@ -104,14 +40,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
   },
 }))
-
-/**
- * The type of like to toggle
- */
-const LikeType = {
-  POST: "POST",
-  COMMENT: "COMMENT",
-}
 
 /**
  * Represents a Post on the user interface.
@@ -152,12 +80,9 @@ const Post = (props) => {
    * Represents the query hook for retreiving comments.
    */
   const { loading, error: getCommentsError, data } = useQuery(GET_COMMENTS, {
-    errorPolicy: "all",
-    pollInterval: 100,
     variables: {
       postId: parseInt(props.id),
     },
-    fetchPolicy: "cache-and-network",
   })
 
   /**
@@ -181,7 +106,13 @@ const Post = (props) => {
    * @param {*} event
    */
   const handleAddComment = (event) => {
-    addComment({ variables: { comment: comment, postId: parseInt(props.id) } })
+    addComment({
+      variables: { comment: comment, postId: parseInt(props.id) },
+      refetchQueries: {
+        query: GET_COMMENTS,
+        variables: { postId: parseInt(props.id) },
+      },
+    })
     setComment("")
     setCommentsToggle(true)
   }

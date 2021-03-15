@@ -73,7 +73,7 @@ const UserToolbar = (props) => {
   return (
     <Toolbar>
       <Typography className={props.classes.title} variant="h6" noWrap>
-        Social App
+        Social
       </Typography>
       <Button color="inherit" onClick={() => redirect("/feed")}>
         News Feed
@@ -111,7 +111,7 @@ const GuestToolbar = (props) => {
   return (
     <Toolbar>
       <Typography className={props.classes.title} variant="h6" noWrap>
-        Social App
+        Social
       </Typography>
       <Button color="inherit" onClick={() => redirect("/home")}>
         Home
