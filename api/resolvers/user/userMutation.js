@@ -29,8 +29,16 @@ const register = async function (parent, args, context) {
       "A password must be between 6 and 32 characters long."
     )
   }
+  let user = await context.prisma.user.findUnique({
+    where: { email: email },
+  })
+  if (user) {
+    throw new UserInputError(
+      "The email you provided has already been registered under another user."
+    )
+  }
   //TODO: complex passwords...
-  let user = await context.prisma.user.create({
+  user = await context.prisma.user.create({
     data: {
       email: email,
       firstName: firstName,

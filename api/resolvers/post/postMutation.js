@@ -1,4 +1,5 @@
 import { getUser, getToken } from "../../utils/auth.js"
+import { UserInputError } from "apollo-server"
 
 const createPost = async function (parent, args, context) {
   let user = await getUser(context)

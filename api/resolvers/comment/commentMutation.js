@@ -1,4 +1,5 @@
 import { getUser, getToken } from "../../utils/auth.js"
+import { ApolloError, UserInputError } from "apollo-server"
 
 async function addComment(parent, args, context) {
   let user = await getUser(context)

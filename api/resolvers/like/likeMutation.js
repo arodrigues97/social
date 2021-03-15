@@ -1,8 +1,10 @@
 import { getUser } from "../../utils/auth.js"
+import UserInputError from "apollo-server"
 
 const toggleLike = async function (parent, args, context) {
   //Ensure user bound action
-  let user = await context.prisma.user.findUnique({ where: { id: 1 } }) //await getUser(context)
+  let user = await getUser(context)
+
   let userId = user.id
 
   //The target id (either a postId or commentId)
