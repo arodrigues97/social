@@ -1,13 +1,7 @@
-import {
-  Card,
-  Container,
-  makeStyles,
-  CardContent,
-  Typography,
-  Portal,
-} from "@material-ui/core"
+import { Container, makeStyles, Typography } from "@material-ui/core"
 import Post from "../components/Post"
 import CreatePost from "./CreatePost"
+import Alert from "@material-ui/lab/Alert"
 import { gql, useQuery } from "@apollo/client"
 
 /**
@@ -42,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
   container: {
     marginTop: theme.spacing(4),
   },
+  error: {
+    margin: theme.spacing(2),
+  },
 }))
 
 /**
@@ -68,7 +65,18 @@ const FeedPage = () => {
     <Container className={classes.container} maxWidth="sm">
       <CreatePost />
       {loading ? <Typography variant="h6">Loading...</Typography> : ""}
-      {error ? <span>{JSON.stringify(error)}</span> : ""}
+      {error ? (
+        <Alert className={classes.error} severity="error">
+          {error.graphQLErrors.map(({ message }) => {
+            return <span>{message}</span>
+          })}
+          {error.networkError
+            ? "Sorry, we are having some issues fetching the news feed."
+            : ""}
+        </Alert>
+      ) : (
+        ""
+      )}
       {data
         ? data.getFeed.map((post, index) => {
             return (
