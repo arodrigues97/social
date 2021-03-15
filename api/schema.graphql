@@ -1,0 +1,72 @@
+  type User {
+    id: ID!
+    email: String!
+    firstName: String!
+    lastName: String!
+    password: String!
+  }
+
+  type Comment {
+    id: ID!
+    post: Post!
+    comment: String!
+    user: User!
+    likes: [Like]
+    likesCount: Int
+  }
+
+  type Post {
+    id: ID!
+    user: User!
+    post: String!
+    likes: [Like]
+    likesCount: Int!
+    likedByUser: Boolean!
+  }
+
+  type AuthPayload {
+    token: String
+    user: User
+  }
+
+  type Query {
+    getUser: User
+    getFeed: [Post]
+    getComments(postId: Int!): [Comment]
+    getUsers: [User]
+  }
+
+  type Mutation {
+    register(
+      email: String!
+      firstName: String!
+      lastName: String!
+      password: String!
+      passwordRepeat: String!
+    ): AuthPayload
+    login(email: String!, password: String!): AuthPayload
+    createPost(post: String!): Post
+    addComment(comment: String!, postId: Int!): Comment
+    toggleLike(targetId: Int!, likeType: LikeType!): LikeMutationResponse
+  }
+
+  type LikeMutationResponse implements LikeResponse {
+    like: Like!
+    liked: Boolean!
+  }
+
+  interface LikeResponse {
+    like: Like
+    liked: Boolean
+  }
+
+ type Like {
+    id: ID!
+    user: User!
+    likeType: LikeType!
+  }
+
+  enum LikeType {
+    POST,
+    COMMENT
+  }

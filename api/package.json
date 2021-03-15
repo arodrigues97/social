@@ -1,0 +1,25 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^2.18.0",
+    "apollo-server": "^2.21.1",
+    "graphql": "^15.5.0",
+    "graphql-import": "^1.0.2",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15"
+  },
+  "devDependencies": {
+    "prisma": "^2.18.0"
+  },
+  "type": "module"
+}
