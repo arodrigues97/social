@@ -3,6 +3,7 @@ import App from "./components/App"
 import { render } from "react-dom"
 import { ApolloProvider } from "@apollo/client"
 import client from "./apollo"
+import "./index.css"
 import { BrowserRouter } from "react-router-dom"
 
 /**
