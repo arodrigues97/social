@@ -6,9 +6,9 @@ import {
   CardContent,
   TextField,
 } from "@material-ui/core"
-
 import { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
+import Alert from "@material-ui/lab/Alert"
 
 /**
  * The mutation used to create a post.
@@ -95,6 +95,18 @@ const CreatePost = () => {
             <Button variant="contained" color="primary" onClick={handlePost}>
               Post
             </Button>
+            {error ? (
+              <Alert severity="error">
+                {error.graphQLErrors.map(({ message }) => {
+                  return <span>{message}</span>
+                })}
+                {error.networkError
+                  ? "Sorry, we are having some issues contacting the network."
+                  : ""}
+              </Alert>
+            ) : (
+              "'"
+            )}
           </CardActions>
         </CardActionArea>
       </Card>
