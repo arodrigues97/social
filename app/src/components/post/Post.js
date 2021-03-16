@@ -13,8 +13,7 @@ import {
 import Comments from "../comment/Comments"
 import { useState } from "react"
 import { useMutation, useQuery } from "@apollo/client"
-import ThumbUpIcon from "@material-ui/icons/ThumbUp"
-import ThumbDownIcon from "@material-ui/icons/ThumbDown"
+import { Favorite, FavoriteBorder } from "@material-ui/icons/"
 import ChatBubbleIcon from "@material-ui/icons/ChatBubble"
 import ADD_COMMENT from "../comment/addCommentMutation"
 import GET_COMMENTS from "../comment/getCommentsQuery"
@@ -172,9 +171,9 @@ const Post = (props) => {
           </Button>
           <Button size="small" onClick={handleLikeClick}>
             {props.isLiked ? (
-              <ThumbDownIcon className={classes.icon} color="primary" />
+              <Favorite className={classes.icon} color="primary" />
             ) : (
-              <ThumbUpIcon className={classes.icon} color="primary" />
+              <FavoriteBorder className={classes.icon} color="primary" />
             )}
             ({props.likesCount})
           </Button>
