@@ -1,6 +1,6 @@
 import AppBar from "@material-ui/core/AppBar"
 import Toolbar from "@material-ui/core/Toolbar"
-import { Button, makeStyles, Typography } from "@material-ui/core"
+import { Button, makeStyles, Typography, Avatar } from "@material-ui/core"
 import { useHistory } from "react-router-dom"
 import { isAuthenticated, logout } from "../utils/authentication.js"
 
@@ -16,10 +16,6 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
-    display: "none",
-    [theme.breakpoints.up("sm")]: {
-      display: "block",
-    },
   },
 }))
 
@@ -84,6 +80,7 @@ const UserToolbar = (props) => {
       <Button color="inherit" onClick={handleLogout}>
         Logout
       </Button>
+      <Avatar src="https://material-ui.com/static/images/avatar/1.jpg"></Avatar>
     </Toolbar>
   )
 }
