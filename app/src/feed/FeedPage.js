@@ -4,7 +4,10 @@ import {
   LinearProgress,
   makeStyles,
   Grid,
+  Avatar,
+  Box,
 } from "@material-ui/core"
+import { Skeleton } from "@material-ui/lab"
 import Post from "../components/post/Post"
 import CreatePost from "../components/post/CreatePost"
 import Alert from "@material-ui/lab/Alert"
@@ -18,7 +21,7 @@ import { useEffect, useRef, useState } from "react"
  */
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginTop: theme.spacing(4),
+    marginTop: theme.spacing(2),
   },
   error: {
     margin: theme.spacing(2),
@@ -44,16 +47,18 @@ const FeedPage = () => {
    * The query hook to fetch the feed.
    * Temporarily using polling intervals to further investigate why the UI is not updating upon cache updating.
    */
-  const [getFeed, { loading, error, data }] = useLazyQuery(GET_FEED, {
+  const [getFeed, { loading, data: feedData }] = useLazyQuery(GET_FEED, {
     onCompleted({ getFeed }) {
-      scrollRef.current.scrollIntoView()
+      if (scrollRef != null) {
+        scrollRef.current.scrollIntoView()
+      }
     },
   })
 
   /**
    * The query hook to fetch the users data.
    */
-  const { data: getUserData } = useQuery(GET_USER, {
+  const { loading: loadingUserData, data: userData } = useQuery(GET_USER, {
     onError({ error }) {},
   })
 
@@ -71,53 +76,75 @@ const FeedPage = () => {
     getFeed({ variables: { offset: feedOffset } })
   }, [feedOffset, getFeed])
 
-  if (!getUserData) {
-    return <span>Loading...</span>
+  /**
+   * The function is used to return a component of loaded posts.
+   * @returns The loaded posts as a component.
+   */
+  function loadPosts() {
+    return (
+      <div>
+        <ul className={classes.postList}>
+          {feedData.getFeed.map((post, index) => {
+            return (
+              <li key={post.id}>
+                <Post
+                  id={post.id}
+                  poster={post.user.firstName + " " + post.user.lastName}
+                  post={post.post}
+                  likesCount={post.likesCount}
+                  isLiked={post.likedByUser}
+                />
+              </li>
+            )
+          })}
+        </ul>
+        <div style={{ float: "left", clear: "both" }} ref={scrollRef}></div>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setFeedOffset(feedOffset + 1)}
+        >
+          Load more
+        </Button>
+      </div>
+    )
   }
+
   return (
     <Container>
       <Grid container className={classes.root} spacing={3}>
         <Grid item xs={12} md={4}></Grid>
         <Grid item xs={12} md={4}>
-          <CreatePost user={getUserData.getUser} />
-          {loading ? <LinearProgress></LinearProgress> : ""}
-          {error ? (
-            <Alert className={classes.error} severity="error">
-              {error.graphQLErrors.map(({ message }) => {
-                return <span>{message}</span>
-              })}
-              {error.networkError
-                ? "Sorry, we are having some issues fetching the news feed."
-                : ""}
-            </Alert>
+          {!userData ? (
+            <div>
+              <Box margin={4}>
+                <Skeleton variant="circle" width={40} height={40} />
+                <Skeleton variant="rect" width={410} height={118} />
+              </Box>
+            </div>
           ) : (
-            ""
+            <CreatePost user={userData.getUser} />
           )}
-          <ul className={classes.postList}>
-            {data
-              ? data.getFeed.map((post, index) => {
-                  return (
-                    <li key={post.id}>
-                      <Post
-                        id={post.id}
-                        poster={post.user.firstName + " " + post.user.lastName}
-                        post={post.post}
-                        likesCount={post.likesCount}
-                        isLiked={post.likedByUser}
-                      />
-                    </li>
-                  )
-                })
-              : ""}
-          </ul>
-          <div style={{ float: "left", clear: "both" }} ref={scrollRef}></div>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setFeedOffset(feedOffset + 1)}
-          >
-            Load more
-          </Button>
+          {!feedData ? (
+            <div>
+              <div>
+                <Box margin={4}>
+                  <Skeleton variant="circle" width={40} height={40} />
+                  <Skeleton variant="rect" width={410} height={200} />
+                </Box>
+                <Box margin={4}>
+                  <Skeleton variant="circle" width={40} height={40} />
+                  <Skeleton variant="rect" width={410} height={200} />
+                </Box>
+                <Box margin={4}>
+                  <Skeleton variant="circle" width={40} height={40} />
+                  <Skeleton variant="rect" width={410} height={200} />
+                </Box>
+              </div>
+            </div>
+          ) : (
+            loadPosts()
+          )}
         </Grid>
         <Grid item xs={12} md={4}></Grid>
       </Grid>
