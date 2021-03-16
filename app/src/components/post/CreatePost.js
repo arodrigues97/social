@@ -5,6 +5,9 @@ import {
   CardActions,
   CardContent,
   TextField,
+  Avatar,
+  CardHeader,
+  makeStyles,
 } from "@material-ui/core"
 import { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
@@ -13,11 +16,28 @@ import GET_FEED from "../../feed/getFeedQuery.js"
 import CREATE_POST from "./createPostMutation.js"
 
 /**
+ * Represents the styling of the Create Post component.
+ */
+const useStyles = makeStyles((theme) => ({
+  cardContent: {
+    margin: 0,
+  },
+  cardHeader: {
+    padding: theme.spacing(2),
+  },
+}))
+
+/**
  * The component of creating a post. Handles the execution of the mutation against the graphql server.
  * @author Adam Rodrigues
  * @returns The component of creating a post.
  */
-const CreatePost = () => {
+const CreatePost = (props) => {
+  /**
+   * The classes to style with.
+   */
+  const classes = useStyles()
+
   /**
    * The create post use mutation hook.
    */
@@ -68,7 +88,14 @@ const CreatePost = () => {
   return (
     <div>
       <Card>
-        <CardContent>
+        <CardHeader
+          title={props.user.firstName + " " + props.user.lastName}
+          className={classes.cardHeader}
+          avatar={
+            <Avatar src="https://material-ui.com/static/images/avatar/1.jpg"></Avatar>
+          }
+        ></CardHeader>
+        <CardContent className={classes.cardContent}>
           <TextField
             multiline
             rows={2}
@@ -94,7 +121,7 @@ const CreatePost = () => {
                   : console.log(JSON.stringify(error.networkError))}
               </Alert>
             ) : (
-              "'"
+              ""
             )}
           </CardActions>
         </CardActionArea>
