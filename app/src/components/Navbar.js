@@ -1,6 +1,14 @@
 import AppBar from "@material-ui/core/AppBar"
 import Toolbar from "@material-ui/core/Toolbar"
-import { Button, makeStyles, Typography, Avatar } from "@material-ui/core"
+import {
+  Button,
+  makeStyles,
+  Typography,
+  Avatar,
+  Menu,
+  MenuItem,
+} from "@material-ui/core"
+import { useState } from "react"
 import { useHistory } from "react-router-dom"
 import { isAuthenticated, logout } from "../utils/authentication.js"
 
@@ -58,6 +66,16 @@ const UserToolbar = (props) => {
     history.push(path)
   }
 
+  const [anchorEl, setAnchorEL] = useState(null)
+
+  const handleProfileClick = (event) => {
+    setAnchorEL(event.currentTarget)
+  }
+
+  const handleProfileClose = () => {
+    setAnchorEL(null)
+  }
+
   /**
    * The method used to handle the logout interaction.
    */
@@ -74,13 +92,34 @@ const UserToolbar = (props) => {
       <Button color="inherit" onClick={() => redirect("/feed")}>
         News Feed
       </Button>
-      <Button color="inherit" onClick={() => redirect("/profile")}>
-        Profile
-      </Button>
-      <Button color="inherit" onClick={handleLogout}>
-        Logout
-      </Button>
-      <Avatar src="https://material-ui.com/static/images/avatar/1.jpg"></Avatar>
+      <div>
+        <Button
+          aria-controls="simple-menu"
+          aria-haspopup="true"
+          onClick={handleProfileClick}
+        >
+          <Avatar src="https://material-ui.com/static/images/avatar/1.jpg"></Avatar>
+        </Button>
+        <Menu
+          style={{ marginTop: "2.4rem" }}
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleProfileClose}
+        >
+          <MenuItem onClick={handleProfileClose}>Profile</MenuItem>
+          <MenuItem onClick={handleProfileClose}>Settings</MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleProfileClose()
+              handleLogout()
+            }}
+          >
+            Logout
+          </MenuItem>
+        </Menu>
+      </div>
     </Toolbar>
   )
 }
