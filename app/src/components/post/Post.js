@@ -1,11 +1,9 @@
 import {
-  Avatar,
   Button,
   Card,
   CardActionArea,
   CardActions,
   CardContent,
-  CardHeader,
   makeStyles,
   TextField,
   Typography,
@@ -18,7 +16,6 @@ import ThumbDownIcon from "@material-ui/icons/ThumbDown"
 import ChatBubbleIcon from "@material-ui/icons/ChatBubble"
 import ADD_COMMENT from "../comment/addCommentMutation"
 import GET_COMMENTS from "../comment/getCommentsQuery"
-import GET_FEED from "../../feed/getFeedQuery"
 import { TOGGLE_LIKE, LikeType } from "./toggleLikeMutation"
 
 /**
@@ -69,9 +66,6 @@ const Post = (props) => {
    * Represents the mutation hook for executing an add comment mutation.
    */
   const [addComment, { error }] = useMutation(ADD_COMMENT, {
-    refetchQueries: [
-      { query: GET_COMMENTS, variables: { postId: parseInt(props.id) } },
-    ],
     onError({ error }) {},
   })
 
@@ -79,18 +73,16 @@ const Post = (props) => {
    * Represents the mutation hook for executing a post like.
    */
   const [toggleLike, { error: likePostError }] = useMutation(TOGGLE_LIKE, {
-    refetchQueries: [{ query: GET_FEED, variables: { offset: 0 } }],
     onError({ likePostError }) {},
   })
 
   /**
    * Represents the query hook for retreiving comments.
    */
-  const { data } = useQuery(GET_COMMENTS, {
+  const { loading, error: getCommentsError, data } = useQuery(GET_COMMENTS, {
     variables: {
       postId: parseInt(props.id),
     },
-    onError({ error }) {},
   })
 
   /**
@@ -116,6 +108,10 @@ const Post = (props) => {
   const handleAddComment = (event) => {
     addComment({
       variables: { comment: comment, postId: parseInt(props.id) },
+      refetchQueries: {
+        query: GET_COMMENTS,
+        variables: { postId: parseInt(props.id) },
+      },
     })
     setComment("")
     setCommentsToggle(true)
@@ -143,13 +139,13 @@ const Post = (props) => {
   return (
     <Card className={classes.feed} variant="outlined" color="primary">
       <CardContent>
-        <CardHeader
-          title={props.poster}
-          className={classes.cardHeader}
-          avatar={
-            <Avatar src="https://material-ui.com/static/images/avatar/1.jpg"></Avatar>
-          }
-        ></CardHeader>
+        <Typography
+          className={classes.title}
+          color="textSecondary"
+          gutterBottom
+        >
+          Posted by: {props.poster}
+        </Typography>
         <Typography component="h3" variant="h6">
           {props.post}
         </Typography>
@@ -163,7 +159,6 @@ const Post = (props) => {
       ) : (
         ""
       )}
-
       <CardActionArea>
         <CardActions>
           <Button size="small" onClick={handleCommentsClick}>
