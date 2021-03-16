@@ -1,6 +1,8 @@
 import {
   Card,
   CardActions,
+  CardHeader,
+  Avatar,
   CardContent,
   makeStyles,
   Box,
@@ -31,6 +33,13 @@ const Comment = (props) => {
   return (
     <div className={classes.root}>
       <Card variant="outlined">
+        <CardHeader
+          title={props.commenter}
+          className={classes.cardHeader}
+          avatar={
+            <Avatar src="https://material-ui.com/static/images/avatar/1.jpg"></Avatar>
+          }
+        ></CardHeader>
         <CardContent>
           <Box component="span" fontWeight={500}>
             {props.commenter}
