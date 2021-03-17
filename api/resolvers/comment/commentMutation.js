@@ -11,10 +11,11 @@ async function addComment(parent, args, context) {
   })
   if (!post) {
     throw new ApolloError("Error: No post found for " + args.postId)
-    return
   }
   let comment = args.comment
-  //TODO: validation
+  if (comment.length < 1) {
+    throw new UserInputError("A post must be a minimum of one character long.")
+  }
   let commentModel = await context.prisma.comment.create({
     data: {
       comment: comment,
