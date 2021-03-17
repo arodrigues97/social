@@ -1,3 +1,4 @@
+import { useLazyQuery } from "@apollo/client"
 import {
   Card,
   CardActions,
@@ -9,6 +10,10 @@ import {
   Button,
   CardActionArea,
 } from "@material-ui/core"
+import { gql } from "graphql-tag"
+import { useEffect, useState } from "react"
+import AddComment from "./AddComment"
+import GET_REPLIES from "./getRepliesQuery"
 
 /**
  * Represents the styling of a Comment.
@@ -30,9 +35,40 @@ const Comment = (props) => {
    */
   const classes = useStyles()
 
+  /**
+   * The repy toggle.
+   */
+  const [replyToggle, setReplyToggle] = useState(false)
+
+  /**
+   * The query hook used to retrieve the replies.
+   */
+  const [replyComments, { data }] = useLazyQuery(GET_REPLIES)
+
+  /**
+   * Loads the comment replies.
+   */
+  useEffect(() => {
+    replyComments({ variables: { commentId: parseInt(props.id) } })
+  }, [])
+
+  /**
+   * Handles the replies being toggled.
+   */
+  function handleReplyToggle() {
+    setReplyToggle(!replyToggle)
+  }
+
+  /**
+   * The styling to aplly for a reply.
+   */
+  let replyToStyle = {
+    margin: "2rem",
+  }
+
   return (
     <div className={classes.root}>
-      <Card variant="outlined">
+      <Card variant="outlined" style={props.replyTo ? replyToStyle : {}}>
         <CardHeader
           title={props.commenter}
           className={classes.cardHeader}
@@ -46,12 +82,42 @@ const Comment = (props) => {
           </Box>
           <p>{props.comment}</p>
         </CardContent>
-        <CardActionArea>
-          <CardActions>
-            <Button size="small">Reply</Button>
-            <Button size="small">Like ({props.likes})</Button>
-          </CardActions>
-        </CardActionArea>
+        <CardActions>
+          <Button size="small" onClick={handleReplyToggle}>
+            Reply
+          </Button>
+          <Button size="small">Like ({props.likes})</Button>
+        </CardActions>
+        {replyToggle ? (
+          <AddComment
+            postId={props.postId}
+            replyCommentId={props.id}
+          ></AddComment>
+        ) : (
+          ""
+        )}
+
+        <div className="replies">
+          {data && data.getReplies
+            ? data.getReplies.map((reply) => {
+                return (
+                  <div>
+                    <Comment
+                      id={reply.id}
+                      postId={reply.post.id}
+                      commenter={
+                        reply.user.firstName + " " + reply.user.lastName
+                      }
+                      comment={reply.comment}
+                      likes={reply.likesCount}
+                      replyTo={true}
+                      replies={reply.replies}
+                    ></Comment>
+                  </div>
+                )
+              })
+            : ""}
+        </div>
       </Card>
     </div>
   )

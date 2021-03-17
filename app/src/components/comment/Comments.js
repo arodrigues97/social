@@ -12,9 +12,12 @@ const Comments = (props) => {
       {props.comments.map((comment) => {
         return (
           <Comment
+            id={comment.id}
+            postId={comment.post.id}
             comment={comment.comment}
             commenter={comment.user.firstName + " " + comment.user.lastName}
             likes={comment.likesCount}
+            replies={comment.replies}
           ></Comment>
         )
       })}

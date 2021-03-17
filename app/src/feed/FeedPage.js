@@ -1,27 +1,19 @@
-import {
-  Button,
-  Container,
-  LinearProgress,
-  makeStyles,
-  Grid,
-  Avatar,
-  Box,
-} from "@material-ui/core"
+import { Button, Container, makeStyles, Grid, Box } from "@material-ui/core"
 import { Skeleton } from "@material-ui/lab"
 import Post from "../components/post/Post"
 import CreatePost from "../components/post/CreatePost"
-import Alert from "@material-ui/lab/Alert"
 import { useLazyQuery, useQuery } from "@apollo/client"
 import GET_FEED from "./getFeedQuery"
 import GET_USER from "./getUserQuery"
 import { useEffect, useRef, useState } from "react"
+import PostList from "../components/post/PostList"
 
 /**
  * Creates the styling of the feed page.
  */
 const useStyles = makeStyles((theme) => ({
   root: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(1),
   },
   error: {
     margin: theme.spacing(2),
@@ -83,21 +75,7 @@ const FeedPage = () => {
   function loadPosts() {
     return (
       <div>
-        <ul className={classes.postList}>
-          {feedData.getFeed.map((post, index) => {
-            return (
-              <li key={post.id}>
-                <Post
-                  id={post.id}
-                  poster={post.user.firstName + " " + post.user.lastName}
-                  post={post.post}
-                  likesCount={post.likesCount}
-                  isLiked={post.likedByUser}
-                />
-              </li>
-            )
-          })}
-        </ul>
+        <PostList posts={feedData.getFeed} />
         <div style={{ float: "left", clear: "both" }} ref={scrollRef}></div>
         <Button
           variant="contained"
@@ -111,10 +89,10 @@ const FeedPage = () => {
   }
 
   return (
-    <Container>
-      <Grid container className={classes.root} spacing={3}>
-        <Grid item xs={12} md={4}></Grid>
-        <Grid item xs={12} md={4}>
+    <div style={{ paddingLeft: "4rem", paddingRight: "4rem" }}>
+      <Grid container className={classes.root} spacing={8}>
+        <Grid className={classes.fixedGridItem} item xs={12} md={2}></Grid>
+        <Grid item xs={12} md={8}>
           {!userData ? (
             <div>
               <Box margin={4}>
@@ -146,9 +124,9 @@ const FeedPage = () => {
             loadPosts()
           )}
         </Grid>
-        <Grid item xs={12} md={4}></Grid>
+        <Grid item xs={12} md={2}></Grid>
       </Grid>
-    </Container>
+    </div>
   )
 }
 

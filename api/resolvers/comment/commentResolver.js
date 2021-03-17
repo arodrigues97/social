@@ -22,6 +22,13 @@ async function resolveLikesCount(parent, args, context) {
   return likes.length
 }
 
+async function resolveReplies(parent, args, context) {
+  let replies = await context.prisma.comment.findMany({
+    where: { commentId: parent.id },
+  })
+  return replies
+}
+
 export default {
   Comment: {
     user: resolveUser,

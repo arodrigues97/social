@@ -1,11 +1,8 @@
 import { gql } from "@apollo/client"
 
-/**
- * Represents the query to fetch for the feed.
- */
-const GET_FEED = gql`
-  query GetFeed($offset: Int!) {
-    getFeed(offset: $offset) {
+const GET_PROFILE_POSTS = gql`
+  query GetProfilePosts($offset: Int!) {
+    getProfilePosts(offset: $offset) {
       id
       post
       user {
@@ -21,9 +18,8 @@ const GET_FEED = gql`
       }
       likesCount
       likedByUser
-      commentCount
     }
   }
 `
 
-export default GET_FEED
+export default GET_PROFILE_POSTS

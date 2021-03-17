@@ -3,14 +3,23 @@ import { ApolloError, UserInputError } from "apollo-server"
 
 async function addComment(parent, args, context) {
   let user = await getUser(context)
-  if (!user) {
-    return
-  }
   let post = await context.prisma.post.findUnique({
     where: { id: args.postId },
   })
   if (!post) {
     throw new ApolloError("Error: No post found for " + args.postId)
+  }
+  let replyComment
+  if (args.replyCommentId) {
+    let replies = await context.prisma.comment.findMany({
+      where: { postId: post.id, id: args.replyCommentId },
+    })
+    if (!replies) {
+      throw new ApolloError(
+        "E:rror: No comment found to reply to with id " + args.replyCommentId
+      )
+    }
+    replyComment = replies[0]
   }
   let comment = args.comment
   if (comment.length < 1) {
@@ -21,6 +30,7 @@ async function addComment(parent, args, context) {
       comment: comment,
       postId: post.id,
       userId: user.id,
+      commentId: replyComment != null ? replyComment.id : undefined,
     },
   })
   return commentModel

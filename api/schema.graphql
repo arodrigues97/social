@@ -22,6 +22,7 @@ type Post {
   likes: [Like]
   likesCount: Int!
   likedByUser: Boolean!
+  commentCount: Int!
 }
 
 type AuthPayload {
@@ -33,6 +34,7 @@ type Query {
   getUser: User
   getFeed(offset: Int!): [Post]
   getComments(postId: Int!): [Comment]
+  getReplies(commentId: Int): [Comment]
   getProfilePosts(offset: Int!): [Post]
 }
 
@@ -46,7 +48,7 @@ type Mutation {
   ): AuthPayload
   login(email: String!, password: String!): AuthPayload
   createPost(post: String!): Post
-  addComment(comment: String!, postId: Int!): Comment
+  addComment(comment: String!, postId: Int!, replyCommentId: Int): Comment
   toggleLike(targetId: Int!, likeType: LikeType!): LikeMutationResponse
 }
 

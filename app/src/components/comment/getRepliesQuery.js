@@ -1,13 +1,13 @@
 import { gql } from "@apollo/client"
 
-/**
- * Represents the query to fetch for the feed.
- */
-const GET_FEED = gql`
-  query GetFeed($offset: Int!) {
-    getFeed(offset: $offset) {
+const GET_REPLIES = gql`
+  query GetReplies($commentId: Int!) {
+    getReplies(commentId: $commentId) {
       id
-      post
+      comment
+      post {
+        id
+      }
       user {
         id
         firstName
@@ -20,10 +20,7 @@ const GET_FEED = gql`
         }
       }
       likesCount
-      likedByUser
-      commentCount
     }
   }
 `
-
-export default GET_FEED
+export default GET_REPLIES

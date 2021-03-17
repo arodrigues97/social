@@ -2,10 +2,7 @@ import {
   Card,
   CardContent,
   CardMedia,
-  Container,
   Grid,
-  Hidden,
-  makeStyles,
   Typography,
 } from "@material-ui/core"
 
@@ -13,15 +10,8 @@ import { useQuery } from "@apollo/client"
 import CreatePost from "../components/post/CreatePost"
 import ProfilePosts from "../components/profile/ProfilePosts"
 import GET_USER from "../feed/getUserQuery"
-const useStyles = makeStyles((theme) => ({
-  root: {
-    margin: theme.spacing(4),
-  },
-}))
 
 const ProfilePage = () => {
-  const classes = useStyles()
-
   /**
    * The query hook to fetch the users data.
    */
@@ -52,9 +42,7 @@ const ProfilePage = () => {
           </Card>
         </Grid>
         <Grid item sm={12} md={8}>
-          <Hidden smDown>
-            {data ? <CreatePost user={data.getUser} /> : <div></div>}
-          </Hidden>
+          {data ? <CreatePost user={data.getUser} /> : <div></div>}
           <ProfilePosts />
         </Grid>
       </Grid>

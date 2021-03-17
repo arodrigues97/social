@@ -2,12 +2,10 @@ import {
   Avatar,
   Button,
   Card,
-  CardActionArea,
   CardActions,
   CardContent,
   CardHeader,
   makeStyles,
-  TextField,
   Typography,
 } from "@material-ui/core"
 import Comments from "../comment/Comments"
@@ -15,10 +13,10 @@ import { useState } from "react"
 import { useMutation, useQuery } from "@apollo/client"
 import { Favorite, FavoriteBorder } from "@material-ui/icons/"
 import ChatBubbleIcon from "@material-ui/icons/ChatBubble"
-import ADD_COMMENT from "../comment/addCommentMutation"
 import GET_COMMENTS from "../comment/getCommentsQuery"
 import GET_FEED from "../../feed/getFeedQuery"
 import { TOGGLE_LIKE, LikeType } from "./toggleLikeMutation"
+import AddComment from "../comment/AddComment"
 
 /**
  * The styling of a post.
@@ -30,12 +28,6 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: 14,
-    marginTop: theme.spacing(2),
-  },
-  commentArea: {
-    display: "block",
-  },
-  postComment: {
     marginTop: theme.spacing(2),
   },
   icon: {
@@ -60,24 +52,9 @@ const Post = (props) => {
   const [commentsToggle, setCommentsToggle] = useState(false)
 
   /**
-   * Represemts the comment value if responding to a post.
-   */
-  const [comment, setComment] = useState("")
-
-  /**
-   * Represents the mutation hook for executing an add comment mutation.
-   */
-  const [addComment, { error }] = useMutation(ADD_COMMENT, {
-    refetchQueries: [
-      { query: GET_COMMENTS, variables: { postId: parseInt(props.id) } },
-    ],
-    onError({ error }) {},
-  })
-
-  /**
    * Represents the mutation hook for executing a post like.
    */
-  const [toggleLike, { error: likePostError }] = useMutation(TOGGLE_LIKE, {
+  const [toggleLike] = useMutation(TOGGLE_LIKE, {
     refetchQueries: [{ query: GET_FEED, variables: { offset: 0 } }],
     onError({ likePostError }) {},
   })
@@ -93,31 +70,11 @@ const Post = (props) => {
   })
 
   /**
-   * The method used to handle the change of input for typing a comment.
-   * @param {*} event The event executed.
-   */
-  const handleCommentChange = (event) => {
-    setComment(event.target.value)
-  }
-
-  /**
    * The method used when the toggle button for comments is clicked.
    * @param {*} event The event executed.
    */
   const handleCommentsClick = (event) => {
     setCommentsToggle(!commentsToggle)
-  }
-
-  /**
-   * The method used when the add comment button is cllicked.
-   * @param {*} event
-   */
-  const handleAddComment = (event) => {
-    addComment({
-      variables: { comment: comment, postId: parseInt(props.id) },
-    })
-    setComment("")
-    setCommentsToggle(true)
   }
 
   /**
@@ -129,16 +86,6 @@ const Post = (props) => {
     })
   }
 
-  //TODO: clean up displaying of like post errors.
-  if (likePostError) {
-    return <span>{JSON.stringify(likePostError)}</span>
-  }
-
-  //TODO: clean up dispalying of post errors.
-  if (error) {
-    return <span>{JSON.stringify(error)}</span>
-  }
-
   return (
     <Card className={classes.feed} variant="outlined" color="primary">
       <CardContent>
@@ -146,7 +93,7 @@ const Post = (props) => {
           title={props.poster}
           className={classes.cardHeader}
           avatar={
-            <Avatar src="https://material-ui.com/static/images/avatar/1.jpg"></Avatar>
+            <Avatar src="https://avatars.githubusercontent.com/u/36482887?s=460&u=4babd11bd036d847b91f98c500e652c2ce55e329&v=4"></Avatar>
           }
         ></CardHeader>
         <Typography component="h3" variant="h6">
@@ -163,41 +110,21 @@ const Post = (props) => {
         ""
       )}
 
-      <CardActionArea>
-        <CardActions>
-          <Button size="small" onClick={handleCommentsClick}>
-            <ChatBubbleIcon className={classes.icon} color="primary" /> (
-            {data ? data.getComments.length : "0"})
-          </Button>
-          <Button size="small" onClick={handleLikeClick}>
-            {props.isLiked ? (
-              <Favorite className={classes.icon} color="primary" />
-            ) : (
-              <FavoriteBorder className={classes.icon} color="primary" />
-            )}
-            ({props.likesCount})
-          </Button>
-        </CardActions>
-        <CardActions className={classes.commentArea}>
-          <TextField
-            fullWidth
-            value={comment}
-            label="Add a comment"
-            name="comment"
-            size="small"
-            variant="outlined"
-            onChange={handleCommentChange}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.postComment}
-            onClick={handleAddComment}
-          >
-            Add Comment
-          </Button>
-        </CardActions>
-      </CardActionArea>
+      <CardActions>
+        <Button size="small" onClick={handleCommentsClick}>
+          <ChatBubbleIcon className={classes.icon} color="primary" /> (
+          {props.commentCount})
+        </Button>
+        <Button size="small" onClick={handleLikeClick}>
+          {props.isLiked ? (
+            <Favorite className={classes.icon} color="primary" />
+          ) : (
+            <FavoriteBorder className={classes.icon} color="primary" />
+          )}
+          ({props.likesCount})
+        </Button>
+      </CardActions>
+      <AddComment postId={props.id}></AddComment>
     </Card>
   )
 }

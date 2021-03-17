@@ -24,11 +24,19 @@ const likedByUser = async function (parent, args, context) {
   return likes.length >= 1 ? true : false
 }
 
+const commentCount = async function (parent, args, context) {
+  let comments = await context.prisma.comment.findMany({
+    where: { postId: parent.id },
+  })
+  return comments.length
+}
+
 export default {
   Post: {
     user: resolveUser,
     likes,
     likesCount,
     likedByUser,
+    commentCount,
   },
 }

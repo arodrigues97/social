@@ -23,6 +23,7 @@ const PostList = (props) => {
                 post={post.post}
                 likesCount={post.likesCount}
                 isLiked={post.likedByUser}
+                commentCount={post.commentCount}
               />
             </li>
           )
