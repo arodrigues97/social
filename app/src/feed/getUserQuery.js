@@ -9,4 +9,5 @@ const GET_USER = gql`
     }
   }
 `
+
 export default GET_USER
