@@ -14,6 +14,7 @@ import { gql, useMutation } from "@apollo/client"
 import Alert from "@material-ui/lab/Alert"
 import GET_FEED from "../../feed/getFeedQuery.js"
 import CREATE_POST from "./createPostMutation.js"
+import GET_PROFILE_POSTS from "../profile/getProfilePosts.js"
 
 /**
  * Represents the styling of the Create Post component.
@@ -42,7 +43,10 @@ const CreatePost = (props) => {
    * The create post use mutation hook.
    */
   const [createPost, { error }] = useMutation(CREATE_POST, {
-    refetchQueries: [{ query: GET_FEED, variables: { offset: 0 } }],
+    refetchQueries: [
+      { query: GET_FEED, variables: { offset: 0 } },
+      { query: GET_PROFILE_POSTS, variables: { offset: 0 } },
+    ],
     onError({ error }) {},
     update(cache, { data: { createPost } }) {
       cache.modify({
@@ -92,7 +96,7 @@ const CreatePost = (props) => {
           title={props.user.firstName + " " + props.user.lastName}
           className={classes.cardHeader}
           avatar={
-            <Avatar src="https://material-ui.com/static/images/avatar/1.jpg"></Avatar>
+            <Avatar src="https://avatars.githubusercontent.com/u/36482887?s=460&u=4babd11bd036d847b91f98c500e652c2ce55e329&v=4"></Avatar>
           }
         ></CardHeader>
         <CardContent className={classes.cardContent}>
@@ -106,25 +110,23 @@ const CreatePost = (props) => {
             onChange={(e) => setPost(e.target.value)}
           />
         </CardContent>
-        <CardActionArea>
-          <CardActions>
-            <Button variant="contained" color="primary" onClick={handlePost}>
-              Post
-            </Button>
-            {error ? (
-              <Alert severity="error">
-                {error.graphQLErrors.map(({ message }) => {
-                  return <span>{message}</span>
-                })}
-                {error.networkError
-                  ? "Sorry, we are having some issues contacting the network."
-                  : console.log(JSON.stringify(error.networkError))}
-              </Alert>
-            ) : (
-              ""
-            )}
-          </CardActions>
-        </CardActionArea>
+        <CardActions>
+          <Button variant="contained" color="primary" onClick={handlePost}>
+            Post
+          </Button>
+          {error ? (
+            <Alert severity="error">
+              {error.graphQLErrors.map(({ message }) => {
+                return <span>{message}</span>
+              })}
+              {error.networkError
+                ? "Sorry, we are having some issues contacting the network."
+                : console.log(JSON.stringify(error.networkError))}
+            </Alert>
+          ) : (
+            ""
+          )}
+        </CardActions>
       </Card>
     </div>
   )
