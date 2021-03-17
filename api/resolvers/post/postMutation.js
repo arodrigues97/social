@@ -3,9 +3,6 @@ import { UserInputError } from "apollo-server"
 
 const createPost = async function (parent, args, context) {
   let user = await getUser(context)
-  if (!user) {
-    return
-  }
   let post = args.post
   //Determine max post length & include validation
   if (post.length < 1) {
