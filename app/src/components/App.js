@@ -3,6 +3,7 @@ import Navbar from "./Navbar"
 import Login from "../login/Login"
 import FeedPage from "../feed/FeedPage"
 import Register from "../register/Register"
+import ProfilePage from "../profile/ProfilePage"
 import { PrivateRoute, PublicRoute } from "../utils/authentication.js"
 
 /**
@@ -15,22 +16,30 @@ function App() {
       <header>
         <Navbar />
       </header>
-      <Switch>
-        <PublicRoute
-          restricted={false}
-          component={<div></div>}
-          path="/"
-          exact
-        />
-        <PublicRoute
-          restricted={true}
-          component={Register}
-          path="/register"
-          exact
-        />
-        <PublicRoute restricted={true} component={Login} path="/login" exact />
-        <PrivateRoute component={FeedPage} path="/feed" exact />
-      </Switch>
+      <div className="root">
+        <Switch>
+          <PublicRoute
+            restricted={false}
+            component={<div></div>}
+            path="/"
+            exact
+          />
+          <PublicRoute
+            restricted={true}
+            component={Register}
+            path="/register"
+            exact
+          />
+          <PublicRoute
+            restricted={true}
+            component={Login}
+            path="/login"
+            exact
+          />
+          <PrivateRoute component={FeedPage} path="/feed" exact />
+          <PrivateRoute component={ProfilePage} path="/profile" exact />
+        </Switch>
+      </div>
     </Router>
   )
 }
