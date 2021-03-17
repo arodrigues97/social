@@ -108,7 +108,14 @@ const UserToolbar = (props) => {
           open={Boolean(anchorEl)}
           onClose={handleProfileClose}
         >
-          <MenuItem onClick={handleProfileClose}>Profile</MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleProfileClose()
+              redirect("/profile")
+            }}
+          >
+            Profile
+          </MenuItem>
           <MenuItem onClick={handleProfileClose}>Settings</MenuItem>
           <MenuItem
             onClick={() => {
