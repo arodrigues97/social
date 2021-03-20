@@ -8,15 +8,16 @@ generator client {
 }
 
 model User {
-  id        Int           @id @default(autoincrement())
-  email     String        @unique
-  password  String
-  firstName String
-  lastName  String
-  Comment   Comment[]
-  Like      CommentLike[]
-  Post      Post[]
-  PostLike  PostLike[]
+  id           Int           @id @default(autoincrement())
+  email        String        @unique
+  password     String
+  firstName    String
+  lastName     String
+  Comment      Comment[]
+  Like         CommentLike[]
+  Post         Post[]
+  PostLike     PostLike[]
+  profileImage String        @default("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
 }
 
 model Comment {
