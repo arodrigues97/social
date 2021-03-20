@@ -4,7 +4,9 @@ import Login from "../login/Login"
 import FeedPage from "../feed/FeedPage"
 import Register from "../register/Register"
 import ProfilePage from "../profile/ProfilePage"
+import HomePage from "../home/HomePage"
 import { PrivateRoute, PublicRoute } from "../utils/authentication.js"
+import { Home } from "@material-ui/icons"
 
 /**
  * Creates the App component.
@@ -19,12 +21,6 @@ function App() {
       <div className="root">
         <Switch>
           <PublicRoute
-            restricted={false}
-            component={<div></div>}
-            path="/"
-            exact
-          />
-          <PublicRoute
             restricted={true}
             component={Register}
             path="/register"
@@ -36,6 +32,12 @@ function App() {
             path="/login"
             exact
           />
+          <PublicRoute
+            restricted={false}
+            component={HomePage}
+            path="/"
+            exact
+          ></PublicRoute>
           <PrivateRoute component={FeedPage} path="/feed" exact />
           <PrivateRoute component={ProfilePage} path="/profile" exact />
         </Switch>
