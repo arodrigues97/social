@@ -1,1 +1,1 @@
-# Social - The simplistic social media app
+# Social - The Simplistic Social Media App
