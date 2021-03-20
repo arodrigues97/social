@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardContent,
   CardMedia,
@@ -23,21 +24,35 @@ const ProfilePage = () => {
     <div style={{ padding: "4rem" }}>
       <Grid container spacing={4}>
         <Grid item sm={12} md={4}>
-          <Card>
+          <Card
+            style={{
+              padding: "2rem",
+              maxWidth: "300px",
+            }}
+          >
             <CardMedia
+              style={{ borderRadius: "50%" }}
               component="img"
               alt="Profile Pic"
               image="https://avatars.githubusercontent.com/u/36482887?s=460&u=4babd11bd036d847b91f98c500e652c2ce55e329&v=4"
             ></CardMedia>
-            <CardContent>
-              <Typography variant="h6" comonent="h3">
+            <CardContent style={{ textAlign: "center" }}>
+              <Typography variant="h5" comonent="h3">
                 Adam Rodrigues
               </Typography>
-              <p>
-                <h5>About Me:</h5>Occaecat do minim duis duis duis exercitation
-                amet. Excepteur est officia officia elit laboris velit pariatur
-                excepteur consectetur ea id consectetur deserunt incididunt.
-              </p>
+              <p>Full Stack Developer</p>
+              <p>Cambridge, Ontario, Canada</p>
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginRight: ".5rem" }}
+              >
+                Follow
+              </Button>
+              <Button variant="contained" size="small">
+                Message
+              </Button>
             </CardContent>
           </Card>
         </Grid>

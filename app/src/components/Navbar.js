@@ -11,6 +11,8 @@ import {
 import { useState } from "react"
 import { useHistory } from "react-router-dom"
 import { isAuthenticated, logout } from "../utils/authentication.js"
+import GET_USER from "../feed/getUserQuery"
+import { useQuery } from "@apollo/client"
 
 /**
  * Represents the styles used for the Navbar.
@@ -33,7 +35,11 @@ const useStyles = makeStyles((theme) => ({
  * @returns The component Navbar.
  */
 const Navbar = (props) => {
+  /**
+   * The classes of styling to use.
+   */
   const classes = useStyles()
+
   return (
     <div className={classes.root}>
       <AppBar position={"relative"}>
@@ -53,6 +59,11 @@ const Navbar = (props) => {
  * @returns The component UserToolbar.
  */
 const UserToolbar = (props) => {
+  /**
+   * The user query hook.
+   */
+  const { loading, data: userData } = useQuery(GET_USER)
+
   /**
    * The instance created for history.
    */
@@ -89,6 +100,9 @@ const UserToolbar = (props) => {
       <Typography className={props.classes.title} variant="h6" noWrap>
         Social
       </Typography>
+      <Button color="inherit" onClick={() => redirect("/")}>
+        Home
+      </Button>
       <Button color="inherit" onClick={() => redirect("/feed")}>
         News Feed
       </Button>
@@ -98,7 +112,7 @@ const UserToolbar = (props) => {
           aria-haspopup="true"
           onClick={handleProfileClick}
         >
-          <Avatar src="https://material-ui.com/static/images/avatar/1.jpg"></Avatar>
+          {loading ? "" : <Avatar src={userData.profileImage}></Avatar>}
         </Button>
         <Menu
           style={{ marginTop: "2.4rem" }}
@@ -156,7 +170,7 @@ const GuestToolbar = (props) => {
       <Typography className={props.classes.title} variant="h6" noWrap>
         Social
       </Typography>
-      <Button color="inherit" onClick={() => redirect("/home")}>
+      <Button color="inherit" onClick={() => redirect("/")}>
         Home
       </Button>
       <Button color="inherit" onClick={() => redirect("/register")}>

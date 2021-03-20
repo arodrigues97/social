@@ -1,2 +1,8 @@
 .env
 node_modules/
+api/node_modules/.prisma/client/index-browser.js
+api/node_modules/
+app.node_modules/
+api/node_modules/.prisma/client/index.js
+.gitignore
+api/node_modules/.prisma/client/index-browser.js

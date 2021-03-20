@@ -2,7 +2,7 @@ const APP_SECRET = "98381238129390943804w8d"
 import { AuthenticationError } from "apollo-server-errors"
 import pkg from "jsonwebtoken"
 const { sign, verify } = pkg
-const DEV_MODE = true
+const DEV_MODE = false
 
 function getToken(userId) {
   return sign({ userId: userId }, APP_SECRET)

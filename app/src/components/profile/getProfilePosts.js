@@ -18,6 +18,7 @@ const GET_PROFILE_POSTS = gql`
       }
       likesCount
       likedByUser
+      commentCount
     }
   }
 `
