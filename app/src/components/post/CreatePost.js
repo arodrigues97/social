@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core"
 import { useState } from "react"
 import { gql, useMutation } from "@apollo/client"
+import client from "../../apollo"
 import Alert from "@material-ui/lab/Alert"
 import GET_FEED from "../../feed/getFeedQuery.js"
 import CREATE_POST from "./createPostMutation.js"

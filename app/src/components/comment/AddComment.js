@@ -40,10 +40,12 @@ const AddComment = (props) => {
   const [addComment] = useMutation(ADD_COMMENT, {
     refetchQueries: [
       { query: GET_COMMENTS, variables: { postId: parseInt(props.postId) } },
-      {
+      /*
+      //TODO: conditionally fetch this...
+         {
         query: GET_REPLIES,
         variables: { commentId: parseInt(props.replyCommentId) },
-      },
+      },*/
     ],
     onError({ error }) {
       console.log("Error=" + JSON.stringify(error))
@@ -59,10 +61,7 @@ const AddComment = (props) => {
       variables: {
         comment: comment,
         postId: parseInt(props.postId),
-        replyCommentId:
-          props.replyCommentId != null
-            ? parseInt(props.replyCommentId)
-            : undefined,
+        replyCommentId: parseInt(props.replyCommentId),
       },
     })
     setComment("")

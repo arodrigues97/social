@@ -1,4 +1,4 @@
-import { useLazyQuery } from "@apollo/client"
+import { useLazyQuery, useQuery } from "@apollo/client"
 import {
   Card,
   CardActions,
@@ -10,7 +10,6 @@ import {
   Button,
   CardActionArea,
 } from "@material-ui/core"
-import { gql } from "graphql-tag"
 import { useEffect, useState } from "react"
 import AddComment from "./AddComment"
 import GET_REPLIES from "./getRepliesQuery"
@@ -43,14 +42,17 @@ const Comment = (props) => {
   /**
    * The query hook used to retrieve the replies.
    */
-  const [replyComments, { data }] = useLazyQuery(GET_REPLIES)
+  const { data } = useQuery(GET_REPLIES, {
+    pollInterval: 100,
+    variables: { commentId: parseInt(props.id) },
+  })
 
   /**
    * Loads the comment replies.
-   */
+   *
   useEffect(() => {
     replyComments({ variables: { commentId: parseInt(props.id) } })
-  }, [])
+  }, [])*/
 
   /**
    * Handles the replies being toggled.
