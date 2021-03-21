@@ -36,6 +36,11 @@ const useStyles = makeStyles((theme) => ({
  */
 const CreatePost = (props) => {
   /**
+   * The typed post value in state.
+   */
+  const [post, setPost] = useState("")
+
+  /**
    * The classes to style with.
    */
   const classes = useStyles()
@@ -44,41 +49,20 @@ const CreatePost = (props) => {
    * The create post use mutation hook.
    */
   const [createPost, { error }] = useMutation(CREATE_POST, {
-    refetchQueries: [
-      { query: GET_FEED, variables: { offset: 0 } },
-      { query: GET_PROFILE_POSTS, variables: { offset: 0 } },
-    ],
-    onError({ error }) {},
-    update(cache, { data: { createPost } }) {
-      cache.modify({
-        id: cache.identify("Post:" + createPost.id),
-        fields: {
-          post(exisistingPost = [], { readField }) {
-            const newPostRef = cache.writeFragment({
-              data: createPost,
-              fragment: gql`
-                fragment NewPost on Post {
-                  id
-                  post
-                  user {
-                    id
-                    firstName
-                    lastName
-                  }
-                }
-              `,
-            })
-            return [...exisistingPost, newPostRef]
-          },
-        },
+    update: (cache, { data }) => {
+      const existingFeed = cache.readQuery({
+        query: GET_FEED,
+        variables: { offset: 0 },
+      })
+      cache.writeQuery({
+        query: GET_FEED,
+        data: { getFeed: [data.createPost, ...existingFeed.getFeed] },
       })
     },
+    onCompleted: () => {
+      setPost("")
+    },
   })
-
-  /**
-   * The typed post value in state.
-   */
-  const [post, setPost] = useState("")
 
   /**
    * The interaction when creating a post.
@@ -87,7 +71,6 @@ const CreatePost = (props) => {
     createPost({
       variables: { post: post },
     })
-    setPost("")
   }
 
   return (
@@ -117,12 +100,9 @@ const CreatePost = (props) => {
           </Button>
           {error ? (
             <Alert severity="error">
-              {error.graphQLErrors.map(({ message }) => {
-                return <span>{message}</span>
-              })}
-              {error.networkError
-                ? "Sorry, we are having some issues contacting the network."
-                : console.log(JSON.stringify(error.networkError))}
+              {JSON.stringify(error.graphQLErrors) +
+                ", " +
+                JSON.stringify(error.networkError)}
             </Alert>
           ) : (
             ""
