@@ -18,6 +18,7 @@ const CREATE_POST = gql`
       }
       likesCount
       likedByUser
+      commentCount
     }
   }
 `

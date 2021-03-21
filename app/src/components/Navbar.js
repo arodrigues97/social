@@ -8,11 +8,10 @@ import {
   Menu,
   MenuItem,
 } from "@material-ui/core"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { useHistory } from "react-router-dom"
 import { isAuthenticated, logout } from "../utils/authentication.js"
-import GET_USER from "../feed/getUserQuery"
-import { useQuery } from "@apollo/client"
+import userContext from "../user/userContext"
 
 /**
  * Represents the styles used for the Navbar.
@@ -59,10 +58,7 @@ const Navbar = (props) => {
  * @returns The component UserToolbar.
  */
 const UserToolbar = (props) => {
-  /**
-   * The user query hook.
-   */
-  const { loading, data: userData } = useQuery(GET_USER)
+  const user = useContext(userContext).getUser
 
   /**
    * The instance created for history.
@@ -87,6 +83,7 @@ const UserToolbar = (props) => {
     setAnchorEL(null)
   }
 
+  console.log(JSON.stringify(user))
   /**
    * The method used to handle the logout interaction.
    */
@@ -112,7 +109,7 @@ const UserToolbar = (props) => {
           aria-haspopup="true"
           onClick={handleProfileClick}
         >
-          {loading ? "" : <Avatar src={userData.profileImage}></Avatar>}
+          <Avatar src={user.profileImage}></Avatar>
         </Button>
         <Menu
           style={{ marginTop: "2.4rem" }}

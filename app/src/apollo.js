@@ -1,4 +1,5 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client"
+import { FastRewind } from "@material-ui/icons"
 import { setContext } from "apollo-link-context"
 import { AUTH_TOKEN } from "./utils/authentication.js"
 
@@ -30,7 +31,20 @@ const authLink = setContext((_, { headers }) => {
  */
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    /*typePolicies: {
+      Query: {
+        fields: {
+          getFeed: {
+            keyArgs: false,
+            merge(existing = [], incoming) {
+              return [...existing, ...incoming]
+            },
+          },
+        },
+      },
+    },*/
+  }),
   connectToDevTools: true,
   defaultOptions: {
     query: {
@@ -38,6 +52,9 @@ const client = new ApolloClient({
     },
     mutate: {
       errorPolicy: "all",
+    },
+    watchQuery: {
+      fetchPolicy: "cache-and-network",
     },
   },
 })

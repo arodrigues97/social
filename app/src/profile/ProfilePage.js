@@ -10,7 +10,7 @@ import {
 import { useQuery } from "@apollo/client"
 import CreatePost from "../components/post/CreatePost"
 import ProfilePosts from "../components/profile/ProfilePosts"
-import GET_USER from "../feed/getUserQuery"
+import GET_USER from "../user/getUserQuery"
 
 const ProfilePage = () => {
   /**

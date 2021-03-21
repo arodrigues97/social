@@ -1,18 +1,33 @@
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom"
+import { BrowserRouter as Router, Switch } from "react-router-dom"
 import Navbar from "./Navbar"
 import Login from "../login/Login"
-import FeedPage from "../feed/FeedPage"
+import FeedContainer from "../feed/FeedContainer"
 import Register from "../register/Register"
 import ProfilePage from "../profile/ProfilePage"
 import HomePage from "../home/HomePage"
+import UserProvider from "../user/UserProvider"
 import { PrivateRoute, PublicRoute } from "../utils/authentication.js"
-import { Home } from "@material-ui/icons"
+import { isAuthenticated } from "../utils/authentication"
 
 /**
  * Creates the App component.
  * @returns The app component.
  */
-function App() {
+const App = () => {
+  if (isAuthenticated()) {
+    return (
+      <UserProvider>
+        <Routes />
+      </UserProvider>
+    )
+  }
+  return <Routes />
+}
+
+/**
+ * Wrapps the possible routes under component Routes to allow conditonal use of UserProvider.
+ */
+const Routes = () => {
   return (
     <Router>
       <header>
@@ -38,7 +53,7 @@ function App() {
             path="/"
             exact
           ></PublicRoute>
-          <PrivateRoute component={FeedPage} path="/feed" exact />
+          <PrivateRoute component={FeedContainer} path="/feed" exact />
           <PrivateRoute component={ProfilePage} path="/profile" exact />
         </Switch>
       </div>
